@@ -3,7 +3,12 @@ from datetime import datetime
 class Logger:
     def __init__(self, file_path: str, debug: bool = False) -> None:
         self.file_path = file_path
-        self.file = open(self.file_path, "a+")
+        try:
+            self.file = open(self.file_path, "a+")
+        except PermissionError as pe:
+            self.file = None
+            self.errorPrint(pe)
+            exit(1)
         self.debug = debug
 
     def debugPrint(self, message: str) -> None:
@@ -17,5 +22,6 @@ class Logger:
         self.writeToLog("[ERROR]", message)
 
     def writeToLog(self, prefix: str, message: str):
-        self.file.write(datetime.now().isoformat() + " " + str(prefix) + " " + str(message) + "\n")
+        if self.file:
+            self.file.write(datetime.now().isoformat() + " " + str(prefix) + " " + str(message) + "\n")
         print(datetime.now().isoformat(), prefix, message)

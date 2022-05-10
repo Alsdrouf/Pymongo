@@ -6,7 +6,14 @@ class DBInjector:
     def __init__(self, collection: Collection[Mapping[str, Any]], file_path: str, device_id: List, logger: Logger = None) -> None:
         self.collection = collection
         self.file_path = file_path
-        self.file = open(self.file_path, "r")
+        try:
+            self.file = open(self.file_path, "r")
+        except PermissionError as pe:
+            logger.errorPrint(pe)
+            exit(1)
+        except FileNotFoundError as fnfe:
+            logger.errorPrint(fnfe)
+            exit(1)
         self.device_id = device_id
         self.logger = logger
 
