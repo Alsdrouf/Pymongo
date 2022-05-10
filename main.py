@@ -30,7 +30,13 @@ logger = Logger("./log.txt", conf["DEBUG"])
 logger.info_print("script started successfully")
 
 #Client
-client = pymongo.MongoClient(conf["server"]["address"], conf["server"]["port"])
+client = pymongo.MongoClient(conf["server"]["address"], conf["server"]["port"], serverSelectionTimeoutMS = 2000)
+
+try:
+    client.server_info()
+except Exception as e:
+    print(e)
+    exit(1)
 
 #set the database name to rfid_data
 self_rfid_database = client["SELF_RFID_DATA"]
