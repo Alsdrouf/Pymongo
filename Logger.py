@@ -17,5 +17,5 @@ class Logger:
         self.writeToLog("[ERROR]", message)
 
     def writeToLog(self, prefix: str, message: str):
-        self.file.write(datetime.now().isoformat() + " " + str(prefix) + " " + str(message))
+        self.file.write(datetime.now().isoformat() + " " + str(prefix) + " " + str(message) + "\n")
         print(datetime.now().isoformat(), prefix, message)
