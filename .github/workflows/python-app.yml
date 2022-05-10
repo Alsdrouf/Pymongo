@@ -37,7 +37,7 @@ jobs:
     - name: Generate Html documentation
       run: |
         ls
-        pdoc3 --html .
+        pdoc3 --html --force --skip-errors .
         ls html
         git add html/
         git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
