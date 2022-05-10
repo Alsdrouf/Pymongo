@@ -27,4 +27,5 @@ class DBInjector:
 
             data["Device_ID"] = self.device_id
             self.collection.insert_one(data)
-            self.logger.debugPrint("Inserted : " + str(data))
+            if self.logger:
+                self.logger.debugPrint("Inserted : " + str(data))
