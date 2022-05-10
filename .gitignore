@@ -133,3 +133,4 @@ dmypy.json
 
 #Ignore data that must be not pushed
 *.csv
+log.txt
