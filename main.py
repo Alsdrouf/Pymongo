@@ -1,5 +1,10 @@
 import pymongo
-import json
+from WebsocketManager import WebsocketManager
+from Logger import Logger
+
+DEBUG = True
+DEVICE_ID = ["BirdDevice18", "sbgacq18"]
+logger = Logger("./log.txt")
 
 #Client
 client = pymongo.MongoClient()
@@ -12,17 +17,12 @@ other_rfid_database = client["OTHER_RFID_DATA"]
 self_raw_data = self_rfid_database["RAW_DATA"]
 other_raw_data = other_rfid_database["RAW_DATA"]
 
-#decode a json string to a dictionnary
-string = '{"name" : "test"}'
-data = json.loads(string)
-print(data)
+websocketManager = WebsocketManager(self_raw_data, DEVICE_ID, logger)
 
-self_raw_data.drop()
-
-#put the decoded data into the database and adapt it
-self_raw_data.insert_one(data)
+#TODO learn the real websocket here
+websocketManager.onIncomingMessage('{"timestamp": "2022-05-10 11:06:03+02:00", "RFID_status": "ON", "IR_status": {}, "Sensor": "", "Status": "Waiting a tag to read", "Alarm": "False", "bat_percent": 0, "bat_voltage": 0, "temperature_board": 0, "type": "information 279"}')
 
 for data in self_raw_data.find():
-    print(data)
+    logger.debugPrint(data)
 
 client.close()
