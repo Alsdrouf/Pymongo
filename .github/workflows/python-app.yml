@@ -48,5 +48,5 @@ jobs:
       if: github.ref == 'refs/heads/documentation'
       uses: ad-m/github-push-action@documentation
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }
+        github_token: ${{ secrets.GITHUB_TOKEN }}
         
