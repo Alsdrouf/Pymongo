@@ -6,7 +6,7 @@ from DBInjector import DBInjector
 DEBUG = True
 #TODO read device id from a file or conf file
 DEVICE_ID = ["BirdDevice18", "sbgacq18"]
-logger = Logger("./log.txt")
+logger = Logger("./log.txt", DEBUG)
 
 #Client
 client = pymongo.MongoClient()

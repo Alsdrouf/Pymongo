@@ -1,13 +1,13 @@
 from datetime import datetime
 
 class Logger:
-    DEBUG = True
-    def __init__(self, file_path: str) -> None:
+    def __init__(self, file_path: str, debug: bool = False) -> None:
         self.file_path = file_path
         self.file = open(self.file_path, "a+")
+        self.debug = debug
 
     def debugPrint(self, message: str) -> None:
-        if Logger.DEBUG:
+        if self.debug:
             self.writeToLog("[DEBUG]", message)
 
     def infoPrint(self, message: str) -> None:
