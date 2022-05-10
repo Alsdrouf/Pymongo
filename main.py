@@ -4,7 +4,7 @@ from Logger import Logger
 from DBInjector import DBInjector
 import json
 
-DEBUG = True
+config = None
 try:
     config = open("conf.json", "r")
 except PermissionError as pe:
@@ -14,6 +14,7 @@ except FileNotFoundError as fnfe:
     print("File wasn't created")
     exit(1)
 
+conf = None
 try:
     conf = json.load(config)
 except json.JSONDecodeError as jsonDecodeError:
@@ -40,9 +41,9 @@ websocketManager = WebsocketManager(self_raw_data, DEVICE_ID, logger)
 #websocketManager.onIncomingMessage('{"timestamp": "2022-05-10 11:06:03+02:00", "RFID_status": "ON", "IR_status": {}, "Sensor": "", "Status": "Waiting a tag to read", "Alarm": "False", "bat_percent": 0, "bat_voltage": 0, "temperature_board": 0, "type": "information 279"}')
 
 dbInjector = DBInjector(self_raw_data, "./BirdDevice18_220327.csv", DEVICE_ID, logger)
-dbInjector.injectFileInDB()
+dbInjector.inject_file_in_db()
 
 for data in self_raw_data.find():
-    logger.debugPrint(data)
+    logger.debug_print(data)
 
 client.close()
