@@ -1,12 +1,13 @@
 from pymongo.collection import Collection
-from typing import Mapping, Any
+from typing import Mapping, Any, List
 from Logger import Logger
 
 class DBInjector:
-    def __init__(self, collection: Collection[Mapping[str, Any]], file_path: str, logger: Logger = None) -> None:
+    def __init__(self, collection: Collection[Mapping[str, Any]], file_path: str, device_id: List, logger: Logger = None) -> None:
         self.collection = collection
         self.file_path = file_path
         self.file = open(self.file_path, "r")
+        self.device_id = device_id
         self.logger = logger
 
     def injectFileInDB(self):
@@ -24,5 +25,6 @@ class DBInjector:
                     content[i] = content[i][:-1]
                 data[header[i]] = content[i]
 
+            data["Device_ID"] = self.device_id
             self.collection.insert_one(data)
             self.logger.debugPrint("Inserted : " + str(data))
