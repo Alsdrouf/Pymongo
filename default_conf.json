@@ -1,0 +1,12 @@
+{
+  "server" : {
+    "address" : "localhost",
+    "port" : 27017
+  },
+  "device_id" : [
+    "A name",
+    "Another name",
+    "etc..."
+  ],
+  "DEBUG" : true
+}

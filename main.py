@@ -2,14 +2,29 @@ import pymongo
 from WebsocketManager import WebsocketManager
 from Logger import Logger
 from DBInjector import DBInjector
+import json
 
 DEBUG = True
-#TODO read device id from a file or conf file
-DEVICE_ID = ["BirdDevice18", "sbgacq18"]
-logger = Logger("./log.txt", DEBUG)
+try:
+    config = open("conf.json", "r")
+except PermissionError as pe:
+    print("No permission to read on config file", pe)
+    exit(1)
+except FileNotFoundError as fnfe:
+    print("File wasn't created")
+    exit(1)
+
+try:
+    conf = json.load(config)
+except json.JSONDecodeError as jsonDecodeError:
+    print(jsonDecodeError.msg)
+    exit(1)
+
+DEVICE_ID = conf["device_id"]
+logger = Logger("./log.txt", conf["DEBUG"])
 
 #Client
-client = pymongo.MongoClient()
+client = pymongo.MongoClient(conf["server"]["address"], conf["server"]["port"])
 
 #set the database name to rfid_data
 self_rfid_database = client["SELF_RFID_DATA"]
