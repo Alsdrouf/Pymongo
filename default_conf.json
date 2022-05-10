@@ -8,5 +8,5 @@
     "Another name",
     "etc..."
   ],
-  "DEBUG" : true
+  "DEBUG" : false
 }
