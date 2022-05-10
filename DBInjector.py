@@ -12,16 +12,17 @@ class DBInjector:
     def injectFileInDB(self):
         line = self.file.readline()
         #remove space in the header
-        header = line.replace(" ", "").split(";")
+        header = line.replace(" ", "")[:-1].split(";")
         while True:
             line = self.file.readline()
             if not line:
                 break
             content = line.split(";")
             data = {}
-            i = 0
-            for head in header:
-                data[head] = content[i]
-                i+=1
+            for i in range(len(header)):
+                if i == len(header) - 1:
+                    content[i] = content[i][:-1]
+                data[header[i]] = content[i]
+
             self.collection.insert_one(data)
             self.logger.debugPrint("Inserted : " + str(data))
