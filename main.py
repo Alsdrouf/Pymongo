@@ -115,7 +115,7 @@ endTime = time.time() * 1000
 logger.info_print("Ended test of db injector : took " + str(int(endTime - startTime)) + "ms")
 
 for status in status_collection.find():
-    print(status)
+    logger.debug_print(status)
 
 logger.info_print("script ended successfully")
 
