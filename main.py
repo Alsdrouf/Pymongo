@@ -89,7 +89,7 @@ websocketManager = WebsocketManager(database, DEVICE_ID, logger)
 
 logger.info_print("Starting stress test of websocket")
 startTime = time.time() * 1000
-for i in range(10000):
+for i in range(1000):
     websocketManager.on_incoming_message(
         """
         {"timestamp": "2022-05-10 11:06:03+02:00",
@@ -116,6 +116,32 @@ logger.info_print("Ended test of db injector : took " + str(int(endTime - startT
 
 for status in status_collection.find():
     logger.debug_print(status)
+
+# Test of aggregation
+result = database["DATA"].aggregate([
+    {
+        "$lookup": {
+            "from": "DEVICES",
+            "localField": "device_id",
+            "foreignField": "_id",
+            "as": "DEVICE_DATA"
+        }
+    },
+    {"$unwind": "$DEVICE_DATA"},
+    {
+        "$lookup": {
+            "from": "STATUS",
+            "localField": "status",
+            "foreignField": "status",
+            "as": "DEVICE_STATUS"
+        }
+    },
+    {"$unwind": "$DEVICE_STATUS"}
+], allowDiskUse=True)
+
+# Example of aggregation result
+for res in result:
+    logger.debug_print(res["DEVICE_STATUS"]["status_label"])
 
 logger.info_print("script ended successfully")
 
