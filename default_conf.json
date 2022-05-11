@@ -3,7 +3,8 @@
     "address" : "localhost",
     "port" : 27017
   },
-  "device_id" : [
+  "device_id": "an_id",
+  "device_label" : [
     "A name",
     "Another name",
     "etc..."
