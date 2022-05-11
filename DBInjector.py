@@ -1,5 +1,7 @@
 from pymongo.database import Database
-from typing import Mapping, Any, List
+from typing import Mapping, Any
+
+import DataPretierAndConverter
 from Logger import Logger
 
 
@@ -15,6 +17,9 @@ class DBInjector:
         """
         self.database = database
         self.sensor_collection = self.database["SENSORS"]
+        self.status_collection = self.database["STATUS"]
+        self.data = self.database["DATA"]
+        self.counter = self.database["COUNTER"]
         self.file_path = file_path
         try:
             self.file = open(self.file_path, "r")
@@ -33,7 +38,10 @@ class DBInjector:
         """
         line = self.file.readline()
         # remove space in the header
-        header = line.replace(" ", "")[:-1].split(";")
+        header = line.lower().replace(" ", "")[:-1].split(";")
+        for i in range(len(header)):
+            if header[i] == "tracking":
+                header[i] = "alarm"
         while True:
             line = self.file.readline()
             if not line:
@@ -44,15 +52,18 @@ class DBInjector:
                 if i == len(header) - 1:
                     content[i] = content[i][:-1]
                 data[header[i]] = content[i]
+
             data["device_id"] = self.device_id
-            sensor = data["Sensor"]
-            data.pop("Sensor")
-            if len(sensor) == 0:
-                collection = self.database["DEVICE_INFO_"+self.device_id.upper()]
-            else:
-                if not self.sensor_collection.find_one({"sensor_id": sensor}):
-                    self.sensor_collection.insert_one({"sensor_id": sensor})
-                collection = self.database["SENSOR_"+sensor]
-            collection.insert_one(data)
+            sensor = data["sensor"]
+            status = data["status"]
+
+            if not self.sensor_collection.find_one({"sensor": sensor}) and len(sensor) > 0:
+                self.sensor_collection.insert_one({"sensor": sensor})
+
+            if len(status) > 0:
+                data["status"] = DataPretierAndConverter.get_status_id_of_status(status)
+            if len(sensor) > 0:
+                data["sensor"] = DataPretierAndConverter.get_sensor_id_of_sensor(sensor)
+                self.data.insert_one(data)
             if self.logger:
                 self.logger.debug_print("Inserted : " + str(data))
