@@ -57,9 +57,6 @@ class DBInjector:
             sensor = data["sensor"]
             status = data["status"]
 
-            if not self.sensor_collection.find_one({"sensor": sensor}) and len(sensor) > 0:
-                self.sensor_collection.insert_one({"sensor": sensor})
-
             if len(status) > 0:
                 data["status"] = DataPretierAndConverter.get_status_id_of_status(status)
             if len(sensor) > 0:
