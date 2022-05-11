@@ -1,4 +1,3 @@
-import sys
 import time
 
 import pymongo
@@ -91,10 +90,22 @@ websocketManager = WebsocketManager(database, DEVICE_ID, logger)
 logger.info_print("Starting stress test of websocket")
 startTime = time.time() * 1000
 for i in range(10000):
-    websocketManager.on_incoming_message('{"timestamp": "2022-05-10 11:06:03+02:00", "RFID_status": "ON", "IR_status": {}, "Sensor": "", "Status": "Waiting a tag to read", "Alarm": "False", "bat_percent": 0, "bat_voltage": 0, "temperature_board": 0, "type": "information 279"}')
+    websocketManager.on_incoming_message(
+        """
+        {"timestamp": "2022-05-10 11:06:03+02:00",
+        "RFID_status": "ON",
+        "IR_status": {},
+        "Sensor": "",
+        "Status": "Waiting a tag to read",
+        "Alarm": "False",
+        "bat_percent": 0,
+        "bat_voltage": 0,
+        "temperature_board": 0,
+        "type": "information 279"}
+        """
+    )
 endTime = time.time() * 1000
 logger.info_print("Ended test of websocket stress test : took " + str(int(endTime - startTime)) + "ms")
-
 
 logger.info_print("Starting test of db injector")
 startTime = time.time() * 1000
