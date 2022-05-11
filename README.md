@@ -2,7 +2,7 @@
 
 ## Prerequisite
 - Python v3.8+
-- Install pymongo `python3 -m pip install pymongo`
+- Install requirements `python3 -m pip install -r requirements.txt`
 - Install mongod and run it while the script is running
 
 ## Installation
