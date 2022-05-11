@@ -1,4 +1,5 @@
 import datetime
+import pprint
 import time
 
 import pymongo
@@ -34,8 +35,8 @@ client = pymongo.MongoClient(conf["server"]["address"], conf["server"]["port"], 
 
 try:
     client.server_info()
-except Exception as e:
-    print(e)
+except pymongo.mongo_client.ServerSelectionTimeoutError as sste:
+    logger.error_print(sste)
     exit(1)
 
 #set the database name to rfid_data
