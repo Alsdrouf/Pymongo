@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Any
 
 
 class Logger:
@@ -17,7 +18,7 @@ class Logger:
             exit(1)
         self.debug = debug
 
-    def debug_print(self, message: str) -> None:
+    def debug_print(self, message: Any) -> None:
         """
         A function that will print a debug message in the output 1> and in a file
         :param message: The message that will be written
@@ -25,21 +26,21 @@ class Logger:
         if self.debug:
             self.write_to_log("[DEBUG]", message)
 
-    def info_print(self, message: str) -> None:
+    def info_print(self, message: Any) -> None:
         """
         A function that will print an info message in the output 1> and in a file
         :param message: The message that will be written
         """
         self.write_to_log("[INFO]", message)
 
-    def error_print(self, message: str) -> None:
+    def error_print(self, message: Any) -> None:
         """
         A function that will print an error message in the output 1> and in a file
         :param message: The message that will be written
         """
         self.write_to_log("[ERROR]", message)
 
-    def write_to_log(self, prefix: str, message: str) -> None:
+    def write_to_log(self, prefix: str, message: Any) -> None:
         """
         A function that will write a log like (time) (prefix) (message)
         :param prefix: The prefix that will be written in the log after the time
