@@ -3,6 +3,8 @@ import json
 import pymongo
 from pymongo.database import Database
 from typing import Any, Mapping, Dict
+
+import DataPretierAndConverter
 from Logger import Logger
 
 
@@ -15,6 +17,7 @@ class WebsocketManager:
         :param logger: The logger that will be used to make debug_print
         """
         self.database = database
+        self.data = database["DATA"]
         self.sensor_collection = database["SENSORS"]
         self.device_id = device_id
         self.logger = logger
@@ -27,13 +30,13 @@ class WebsocketManager:
         no_error = True
         # decode a json string to a dictionary
         data = None
-        sensor = None
         try:
-            data = json.loads(message)
-            sensor = data["Sensor"]
-            data.pop("Sensor")
-            data["Timestamp"] = data["timestamp"]
-            data.pop("timestamp")
+            data: Dict[str, Any] = json.loads(message)
+            newData = {}
+            for key in data.keys():
+                if key != key.lower():
+                    newData[key.lower()] = data[key]
+            data = newData
             data["device_id"] = self.device_id
             if self.logger:
                 self.logger.debug_print(data)
@@ -44,21 +47,22 @@ class WebsocketManager:
             no_error = False
 
         if no_error:
-            self.insert_data_into_the_database(data, sensor)
+            status = data["status"]
+            sensor = data["sensor"]
+            if len(status) > 0:
+                data["status"] = DataPretierAndConverter.get_status_id_of_status(status)
+            if len(sensor) > 0:
+                data["sensor"] = DataPretierAndConverter.get_sensor_id_of_sensor(sensor)
+                self.data.insert_one(data)
+            self.insert_data_into_the_database(data)
 
-    def insert_data_into_the_database(self, data: Dict, sensor: str) -> None:
+    def insert_data_into_the_database(self, data: Dict) -> None:
         """
         A function that will insert data into the database from a dictionary
         :param data: The dictionary that will be inserted in the database
         """
-        if len(sensor) == 0:
-            collection = self.database["DEVICE_INFO_"+self.device_id.upper()]
-        else:
-            if not self.sensor_collection.find_one({"sensor_id": sensor}):
-                self.sensor_collection.insert_one({"sensor_id": sensor})
-            collection = self.database["SENSOR_" + sensor]
         try:
-            collection.insert_one(data)
+            self.data.insert_one(data)
         except pymongo.mongo_client.PyMongoError as pyMongoError:
             if self.logger:
                 self.logger.error_print("Unexpected error " + str(pyMongoError))
