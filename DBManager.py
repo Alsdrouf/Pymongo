@@ -4,6 +4,7 @@ from typing import Any, Mapping, Union
 from pymongo.database import Database
 from pymongo.collection import Collection
 
+
 class DBManager:
     def __init__(
             self,
