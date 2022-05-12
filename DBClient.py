@@ -67,5 +67,3 @@ class DBClient:
         Function that will close the connection to the mongoDB server
         """
         self.db_manager.close_connection()
-
-
