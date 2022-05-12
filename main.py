@@ -3,28 +3,14 @@ import time
 import pymongo
 
 import DataPretierAndConverter
+import Util
 from WebsocketManager import WebsocketManager
 from Logger import Logger
 from DBInjector import DBInjector
 from typing import List
-import json
+from DBManager import DBManager
 
-config = None
-try:
-    config = open("conf.json", "r")
-except PermissionError as pe:
-    print("No permission to read on config file", pe)
-    exit(1)
-except FileNotFoundError as fnfe:
-    print("Config file wasn't found", fnfe)
-    exit(1)
-
-conf = None
-try:
-    conf = json.load(config)
-except json.JSONDecodeError as jsonDecodeError:
-    print(jsonDecodeError.msg)
-    exit(1)
+conf = Util.load_config()
 
 DEBUG: bool = conf["DEBUG"]
 DEVICE_ID: str = conf["device_id"]
@@ -34,21 +20,14 @@ logger = Logger("./log.txt", DEBUG)
 logger.info_print("script started successfully")
 
 # Client
-client = pymongo.MongoClient(conf["server"]["address"], conf["server"]["port"], serverSelectionTimeoutMS=2000)
-
-try:
-    client.server_info()
-except pymongo.mongo_client.ServerSelectionTimeoutError as sste:
-    logger.error_print(sste)
-    exit(1)
-
-# set the database name to DATA
-database = client["DATA"]
+db_manager = DBManager(address=conf["server"]["address"], port=conf["server"]["port"], logger=logger)
 
 if DEBUG:
-    client.drop_database(database)
+    db_manager.drop_database("DATA")
 
-# create a collection of raw_data
+database = db_manager.get_database("DATA")
+
+# create the collections
 device_collection = database["DEVICES"]
 if "device_id_1" not in device_collection.index_information():
     device_collection.create_index("device_id", unique=True)
@@ -151,4 +130,4 @@ for res in result:
 
 logger.info_print("script ended successfully")
 
-client.close()
+db_manager.close_connection()
