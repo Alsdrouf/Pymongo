@@ -18,6 +18,8 @@ class DBClient:
 
         self.database = self.db_manager.get_database("DATA")
 
+        self.data_collection = self.database["DATA"]
+
         # create the collections
         self.device_collection = self.database["DEVICES"]
         if "device_id_1" not in self.device_collection.index_information():

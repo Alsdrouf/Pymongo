@@ -25,7 +25,7 @@ if DEBUG:
 db_client = DBClient(db_manager)
 db_client.get_or_update_device(DEVICE_ID, DEVICE_LABEL)
 
-websocketManager = WebsocketManager(db_client.database, DEVICE_ID, logger)
+websocketManager = WebsocketManager(db_client.data_collection, DEVICE_ID, logger)
 
 # TODO read the real websocket here
 
@@ -51,7 +51,7 @@ logger.info_print("Ended test of websocket stress test : took " + str(int(endTim
 
 logger.info_print("Starting test of db injector")
 startTime = time.time() * 1000
-dbInjector = DBInjector(db_client.database, "./BirdDevice18_220327.csv", DEVICE_ID, logger)
+dbInjector = DBInjector(db_client.data_collection, "./BirdDevice18_220327.csv", DEVICE_ID, logger)
 dbInjector.inject_file_in_db()
 endTime = time.time() * 1000
 

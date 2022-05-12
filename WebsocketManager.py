@@ -1,7 +1,7 @@
 import json
 
 import pymongo
-from pymongo.database import Database
+from pymongo.collection import Collection
 from typing import Any, Mapping, Dict
 
 import DataPretierAndConverter
@@ -9,16 +9,14 @@ from Logger import Logger
 
 
 class WebsocketManager:
-    def __init__(self, database: Database[Mapping[str, Any]], device_id: str, logger: Logger = None) -> None:
+    def __init__(self, data_collection: Collection[Mapping[str, Any]], device_id: str, logger: Logger = None) -> None:
         """
         The constructor that will create the websocket manager
-        :param database: The database that will be used to put data inside
+        :param data_collection: The collection were we will put the data
         :param device_id: A list that will contain all the device_name / id
         :param logger: The logger that will be used to make debug_print
         """
-        self.database = database
-        self.data = database["DATA"]
-        self.sensor_collection = database["SENSORS"]
+        self.data_collection = data_collection
         self.device_id = device_id
         self.logger = logger
 
@@ -61,7 +59,7 @@ class WebsocketManager:
         :param data: The dictionary that will be inserted in the database
         """
         try:
-            self.data.insert_one(data)
+            self.data_collection.insert_one(data)
         except pymongo.mongo_client.PyMongoError as pyMongoError:
             if self.logger:
                 self.logger.error_print("Unexpected error " + str(pyMongoError))
