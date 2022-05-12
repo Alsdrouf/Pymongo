@@ -1,3 +1,4 @@
+import datetime
 import json
 
 import pymongo
@@ -32,8 +33,7 @@ class WebsocketManager:
             data: Dict[str, Any] = json.loads(message)
             newData = {}
             for key in data.keys():
-                if key != key.lower():
-                    newData[key.lower()] = data[key]
+                newData[key.lower()] = data[key]
             data = newData
             data["device_id"] = self.device_id
         except json.JSONDecodeError as jsonDecodeError:
@@ -50,7 +50,7 @@ class WebsocketManager:
             if len(sensor) > 0:
                 data["sensor"] = DataPretierAndConverter.get_sensor_id_of_sensor(sensor)
                 if self.logger:
-                    self.logger.debug_print(data)
+                    self.logger.debug_print("Inserted : " + str(data))
                 self.insert_data_into_the_database(data)
 
     def insert_data_into_the_database(self, data: Dict) -> None:
