@@ -38,8 +38,6 @@ class WebsocketManager:
                     newData[key.lower()] = data[key]
             data = newData
             data["device_id"] = self.device_id
-            if self.logger:
-                self.logger.debug_print(data)
         except json.JSONDecodeError as jsonDecodeError:
             if self.logger:
                 self.logger.error_print(jsonDecodeError.msg)
@@ -53,8 +51,9 @@ class WebsocketManager:
                 data["status"] = DataPretierAndConverter.get_status_id_of_status(status)
             if len(sensor) > 0:
                 data["sensor"] = DataPretierAndConverter.get_sensor_id_of_sensor(sensor)
-                self.data.insert_one(data)
-            self.insert_data_into_the_database(data)
+                if self.logger:
+                    self.logger.debug_print(data)
+                self.insert_data_into_the_database(data)
 
     def insert_data_into_the_database(self, data: Dict) -> None:
         """
