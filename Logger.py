@@ -2,6 +2,8 @@ import sys
 from datetime import datetime
 from typing import Any
 
+import dateutil.tz
+
 
 class Logger:
     def __init__(self, file_path: str, debug: bool = False) -> None:
@@ -48,7 +50,7 @@ class Logger:
         :param message: The message that will be written after the prefix
         :param error: If true will output the log on the error output 2>
         """
-        to_write = datetime.now().isoformat() + " " + str(prefix) + " " + str(message) + "\n"
+        to_write = datetime.now(tz=dateutil.tz.tzlocal()).isoformat(sep=" ", timespec="milliseconds") + " " + str(prefix) + " " + str(message) + "\n"
         if self.file:
             self.file.write(to_write)
         if error:
