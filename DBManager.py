@@ -1,6 +1,6 @@
 import pymongo
 from Logger import Logger
-from typing import Any, Mapping, Union
+from typing import Any, Mapping
 from pymongo.database import Database
 from pymongo.collection import Collection
 
@@ -65,6 +65,3 @@ class DBManager:
         Function that will close the connection with mongoDB
         """
         self.client.close()
-
-
-

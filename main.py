@@ -1,7 +1,4 @@
 import time
-
-import pymongo
-
 import DataPretierAndConverter
 import Util
 from WebsocketManager import WebsocketManager
