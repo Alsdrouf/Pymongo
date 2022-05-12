@@ -1,4 +1,4 @@
-from pymongo.collection import Collection
+from pymongo.collection import Collection, ObjectId
 from typing import Mapping, Any
 
 import DataPretierAndConverter
@@ -9,7 +9,7 @@ class DBInjector:
     def __init__(self,
                  data_collection: Collection[Mapping[str, Any]],
                  file_path: str,
-                 device_id: str,
+                 device_id: ObjectId,
                  logger: Logger = None) -> None:
         """
         The constructor that will create the dbInjector

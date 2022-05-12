@@ -1,7 +1,7 @@
 import json
 
 import pymongo
-from pymongo.collection import Collection
+from pymongo.collection import Collection, ObjectId
 from typing import Any, Mapping, Dict
 
 import DataPretierAndConverter
@@ -9,7 +9,7 @@ from Logger import Logger
 
 
 class WebsocketManager:
-    def __init__(self, data_collection: Collection[Mapping[str, Any]], device_id: str, logger: Logger = None) -> None:
+    def __init__(self, data_collection: Collection[Mapping[str, Any]], device_id: ObjectId, logger: Logger = None) -> None:
         """
         The constructor that will create the websocket manager
         :param data_collection: The collection were we will put the data
