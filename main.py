@@ -71,7 +71,7 @@ result = db_client.data_collection.aggregate([
         }
     },
     {"$unwind": "$DEVICE_DATA"},
-{
+    {
         "$lookup": {
             "from": "STATUS",
             "localField": "status",
