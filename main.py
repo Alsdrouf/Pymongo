@@ -54,8 +54,7 @@ if "device_id_1" not in device_collection.index_information():
     device_collection.create_index("device_id", unique=True)
 
 sensor_collection = database["SENSORS"]
-if "sensor_id_1" not in sensor_collection.index_information():
-    sensor_collection.create_index("sensor", unique=True)
+if "sensor_code_1" not in sensor_collection.index_information():
     sensor_collection.create_index("sensor_code", unique=True)
 
 counter_collection = database["COUNTER"]
@@ -64,8 +63,6 @@ if counter_collection.count_documents({}) == 0:
     counter_collection.insert_one({"sensor_count": 0})
 
 status_collection = database["STATUS"]
-if "status_1" not in status_collection.index_information():
-    status_collection.create_index("status", unique=True)
 
 DataPretierAndConverter.counter_collection = counter_collection
 DataPretierAndConverter.sensor_collection = sensor_collection
@@ -89,19 +86,19 @@ websocketManager = WebsocketManager(database, DEVICE_ID, logger)
 
 logger.info_print("Starting stress test of websocket")
 startTime = time.time() * 1000
-for i in range(1000):
+for i in range(10000):
     websocketManager.on_incoming_message(
         """
-        {"timestamp": "2022-05-10 11:06:03+02:00",
-        "RFID_status": "ON",
-        "IR_status": {},
-        "Sensor": "",
-        "Status": "Waiting a tag to read",
-        "Alarm": "False",
-        "bat_percent": 0,
-        "bat_voltage": 0,
-        "temperature_board": 0,
-        "type": "information 279"}
+        {
+            "timestamp": "2022-05-10 11:06:03.927+02:00",
+            "Sensor": "A0",
+            "Status": "3B0018BE3E",
+            "Latitude": "",
+            "Longitude": "",
+            "Alarm": "False",
+            "System": " ",
+            "type": "record"
+        }
         """
     )
 endTime = time.time() * 1000
@@ -132,16 +129,25 @@ result = database["DATA"].aggregate([
         "$lookup": {
             "from": "STATUS",
             "localField": "status",
-            "foreignField": "status",
+            "foreignField": "_id",
             "as": "DEVICE_STATUS"
         }
     },
-    {"$unwind": "$DEVICE_STATUS"}
+    {"$unwind": "$DEVICE_STATUS"},
+    {
+        "$lookup": {
+            "from": "SENSORS",
+            "localField": "sensor",
+            "foreignField": "_id",
+            "as": "DEVICE_SENSOR"
+        }
+    },
+    {"$unwind": "$DEVICE_SENSOR"}
 ], allowDiskUse=True)
 
 # Example of aggregation result
 for res in result:
-    logger.debug_print(res["DEVICE_STATUS"]["status_label"])
+    logger.debug_print(res)
 
 logger.info_print("script ended successfully")
 
