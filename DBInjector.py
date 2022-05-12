@@ -62,5 +62,5 @@ class DBInjector:
             if len(sensor) > 0:
                 data["sensor"] = DataPretierAndConverter.get_sensor_id_of_sensor(sensor)
                 self.data.insert_one(data)
-            if self.logger:
-                self.logger.debug_print("Inserted : " + str(data))
+                if self.logger:
+                    self.logger.debug_print("Inserted : " + str(data))
