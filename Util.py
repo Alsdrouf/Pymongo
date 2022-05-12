@@ -1,7 +1,12 @@
 import json
+from typing import Dict, Any
 
 
-def load_config():
+def load_config() -> Dict[str, Any]:
+    """
+    Function that will load a config file named conf.json
+    :return: A dictionary with the config that was loaded
+    """
     config = None
     try:
         config = open("conf.json", "r")
