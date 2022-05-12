@@ -2,6 +2,7 @@ from pymongo.collection import Collection, ObjectId
 from typing import Mapping, Any
 
 import DataPretierAndConverter
+import Util
 from Logger import Logger
 
 
@@ -60,6 +61,6 @@ class DBInjector:
                 data["status"] = DataPretierAndConverter.get_status_id_of_status(status)
             if len(sensor) > 0:
                 data["sensor"] = DataPretierAndConverter.get_sensor_id_of_sensor(sensor)
-                self.data_collection.insert_one(data)
+                Util.insert_one_in_db_or_write_in_file(self.data_collection, data)
                 if self.logger:
                     self.logger.debug_print("Inserted : " + str(data))

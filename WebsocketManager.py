@@ -6,6 +6,7 @@ from typing import Any, Mapping, Dict
 
 import DataPretierAndConverter
 from Logger import Logger
+import Util
 
 
 class WebsocketManager:
@@ -58,7 +59,7 @@ class WebsocketManager:
         :param data: The dictionary that will be inserted in the database
         """
         try:
-            self.data_collection.insert_one(data)
+            Util.insert_one_in_db_or_write_in_file(self.data_collection, data)
         except pymongo.mongo_client.PyMongoError as pyMongoError:
             if self.logger:
                 self.logger.error_print("Unexpected error " + str(pyMongoError))
